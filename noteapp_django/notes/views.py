@@ -12,6 +12,9 @@ class NoteAPIView(APIView):
     def get(self, request):
         notes = Note.objects.all()
 
+        for note in notes:
+            note.body = note.body[0:450] + "..." if len(note.body) > 450 else note.body
+        
         serializer = NoteSerializer(notes, many=True)
 
         return Response(serializer.data)
@@ -24,6 +27,8 @@ class NoteAPIView(APIView):
             return Response(status=status.HTTP_201_CREATED)
         else: 
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
 
 class NotesDetailAPIView(APIView):
 

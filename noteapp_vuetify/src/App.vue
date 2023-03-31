@@ -9,7 +9,11 @@
       <v-navigation-drawer
         permanent
         theme="dark"
-        color="#750409"
+        color="#0F8C52"
+        class="border-thin"
+        :border="0"
+        elevation="5"
+        :width="230"
       >
         <v-list nav>
           <h2>Fancy Notes</h2>
@@ -18,15 +22,16 @@
         </v-list>
       </v-navigation-drawer>
       
+
       <v-main>
         <v-container align-center>
           <router-view />
         </v-container>
       </v-main>
-      
 
 
     </v-layout>
+
   </v-card>
 
 
@@ -35,3 +40,6 @@
 <script setup>
   //
 </script>
+<style>
+
+</style>
