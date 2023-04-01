@@ -15,7 +15,7 @@ class NoteTests(TestCase):
         note.save()
 
         ntitle = "todotitle"
-        nbody = "todo\nbody\nhehe"
+        nbody = "todo\nbody\nhefsghe"
         
         todo = Todo(note=note, title=ntitle, body=nbody)
         todo.save()

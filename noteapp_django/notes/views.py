@@ -36,4 +36,10 @@ class NotesDetailAPIView(APIView):
         note = get_object_or_404(Note, id=note_id)
         serializer = NoteSerializer(note)
         return Response(data=serializer.data)
-
+    
+    def delete(self, request, note_id):
+        #temporaly delete
+        #Todo: on delete remove note from Note model and add to Thrash model when note is deleted permanently after 30 days
+        #with possibility to get this note out of thrash bin
+        Note.objects.filter(id=note_id).delete()
+        return Response(status=status.HTTP_200_OK)

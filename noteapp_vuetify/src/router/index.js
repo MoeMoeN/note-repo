@@ -1,6 +1,7 @@
 // Composables
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
+import NoteView from '../views/Note.vue'
 
 const routes = [
   //{
@@ -21,7 +22,13 @@ const routes = [
     path: '/',
     name: 'home',
     component: HomeView,
-  }
+  },
+  {
+    path: '/note/:note_id',
+    name: 'note',
+    component: NoteView,
+  },
+  
 ]
 
 const router = createRouter({

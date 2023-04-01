@@ -6,6 +6,7 @@
       origin-left="true"
       transition-duration="0.3s"
       item-selector=".item"
+      :order="order"
     >
 
       <v-col
@@ -23,21 +24,32 @@
         v-slot="{ isHovering, props }"
         open-delay="20"
       >
+        <router-link :to="`/note/${note.id}`">
             <v-card :elevation="isHovering ? 4 : 2"
             variant = "tonal" 
             color="blue-grey-lighten-4" 
             v-bind="props" 
             @click="v-ripple"
+            @contextmenu.prevent.native="showContextMenu($event, note)"
             >
               
               <v-card-title>{{ note.title }}</v-card-title>
               <v-card-text >{{ note.body }}</v-card-text>
               <v-card-subtitle class="text-right text-padding" padding="2">{{ note.created }}</v-card-subtitle>
             </v-card>
-
+          </router-link>
           </v-hover>
+
+
         </v-col>
       </v-row>
+      <context-menu
+        :x="menuPos.x"
+        :y="menuPos.y"
+        :items="menuItems"
+        ref="contextMenu"
+        @item-click="onMenuItemClick"
+        />
     </v-container>
   </v-app>
 
@@ -45,11 +57,25 @@
 
 <script>
 import axios from 'axios'
+
+import ContextMenu from '../components/ContextMenu.vue'
+
 export default{
   name: 'Notes',
+  components: {
+    ContextMenu,
+  },
   data(){
     return{
-      notes: {}
+      notes: {},
+      order: {},
+      menuPos: {x:0, y:0},
+      menuItems: [
+        {title: 'Select', action: 'select'},
+        {title: 'Delete', action: 'delete'},
+      ],
+      contextMenuNote: null,
+      selectedNotes: {},
     }
   },
   mounted() {
@@ -57,15 +83,59 @@ export default{
     document.title = 'Fancy Notes'
   },
   methods:{
+    //get notes
     async getNotes(){
       await axios
         .get('/api/notes')
         .then(response=> {
           this.notes = response.data
+          
+          //seems to do nothing in v-masonry :order='order'
+          this.order = this.notes
+            .sort((a, b) => new Date(b.created) - new Date(a.created))
+            .map(note => note.id)
         })
         .catch(error => {
           console.log(error)
         })
+    },
+
+    //delete note
+    async deleteNote(){
+      const noteId = this.contextMenuNote.id;
+      if (confirm("Are you sure?")){
+        await axios
+          .delete(`/api/notes/${noteId}/`)
+          .then(response => {
+            console.log(response);
+            this.notes = this.notes.filter(note => note.id !== noteId);
+            this.$nextTick(() => this.$redrawVueMasonry());
+          })
+          .catch(error => {
+          console.log(error)
+        })
+      }
+    },
+
+    //TODO selecting notes
+    selectNote(){
+
+    },
+
+    //context menu
+    showContextMenu(event, note) {
+      //event.preventDefault(); //is it have to be here?
+      this.contextMenuNote = note;
+      this.menuPos = {x: event.clientX, y: event.clientY};
+        this.$nextTick(() => {
+          this.$refs.contextMenu.showMenu = true;
+        });
+    },
+    //context menu actions
+    onMenuItemClick(item) {
+      if (item.action == "delete"){
+        this.deleteNote()
+      }
     }
   },
 }
