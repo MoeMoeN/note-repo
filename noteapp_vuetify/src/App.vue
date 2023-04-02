@@ -1,4 +1,5 @@
 <template>
+  <v-app theme="dark">
   <v-card>
     <v-layout>
       <!-- <v-navigation-drawer
@@ -17,7 +18,9 @@
       >
         <v-list nav>
           <h2>Fancy Notes</h2>
+          <router-link style="text-decoration: none; color: inherit;" to="/">
           <v-list-item prepend-icon="mdi-notebook" title="Notes" value="notes"></v-list-item>
+          </router-link>
           <v-list-item prepend-icon="mdi-cog" title="Settings" value="settings"></v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -34,10 +37,12 @@
 
   </v-card>
 
-
+</v-app>
 </template>
 
 <script setup>
+import Home from './views/Home.vue';
+
   //
 </script>
 <style>

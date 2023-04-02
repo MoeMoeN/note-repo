@@ -43,3 +43,13 @@ class NotesDetailAPIView(APIView):
         #with possibility to get this note out of thrash bin
         Note.objects.filter(id=note_id).delete()
         return Response(status=status.HTTP_200_OK)
+    
+    def post(self, request, note_id, format=None):
+        #save modified note
+        note = get_object_or_404(Note, id=note_id)
+        serializer = NoteSerializer(note, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 

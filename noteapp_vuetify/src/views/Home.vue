@@ -24,7 +24,7 @@
         v-slot="{ isHovering, props }"
         open-delay="20"
       >
-        <router-link :to="`/note/${note.id}`">
+        <router-link style="text-decoration: none; color: inherit;" :to="`/note/${note.id}`">
             <v-card :elevation="isHovering ? 4 : 2"
             variant = "tonal" 
             color="blue-grey-lighten-4" 
