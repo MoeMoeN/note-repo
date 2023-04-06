@@ -8,7 +8,7 @@ from .serializers import NoteSerializer, TodoSerializer
 
 
 class NoteAPIView(APIView):
-
+    #get notes
     def get(self, request):
         notes = Note.objects.all()
 
@@ -19,34 +19,45 @@ class NoteAPIView(APIView):
 
         return Response(serializer.data)
 
+    #create new note
+    #TO-DO add limit how many notes user can create (but that's depends on user so first need to add users)
     def post(self, request):
-        serializer = NoteSerializer(data=request.data)
+        serializer = NoteSerializer(data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
-            return Response(status=status.HTTP_201_CREATED)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else: 
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 
 class NotesDetailAPIView(APIView):
-
+    #get note
     def get(self, request, note_id):
         note = get_object_or_404(Note, id=note_id)
         serializer = NoteSerializer(note)
         return Response(data=serializer.data)
     
-    def delete(self, request, note_id):
-        #temporaly delete
-        #Todo: on delete remove note from Note model and add to Thrash model when note is deleted permanently after 30 days
-        #with possibility to get this note out of thrash bin
-        Note.objects.filter(id=note_id).delete()
-        return Response(status=status.HTTP_200_OK)
-    
-    def post(self, request, note_id, format=None):
-        #save modified note
-        note = get_object_or_404(Note, id=note_id)
+    #temporaly delete
+    #Todo: on delete remove note from Note model and add to Thrash model when note is deleted permanently after 30 days
+    #with possibility to get this note out of thrash bin
+    def delete(self, request, note_id):    
+        try:
+            Note.objects.filter(id=note_id).delete()
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+    #save modified note
+    def patch(self, request, note_id, format=None):
+        note = get_object_or_404(Note, id=note_id) #should be NO_CONTENT but that's seems cleaner
+        # try:
+        #    note = Note.objects.get(id=note_id)
+        #    return Response(status=status.HTTP_200_OK)
+        # except Note.DoesNotExist:
+        #     return Response(status=status.HTTP_204_NO_CONTENT)
+        
         serializer = NoteSerializer(note, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()

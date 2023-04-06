@@ -2,6 +2,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/Home.vue'
 import NoteView from '../views/Note.vue'
+import NewNoteView from '../views/NewNote.vue'
 
 const routes = [
   //{
@@ -27,6 +28,11 @@ const routes = [
     path: '/note/:note_id',
     name: 'note',
     component: NoteView,
+  },
+  {
+    path: '/new-note/:note_id',
+    name: 'new-note',
+    component: NewNoteView,
   },
   
 ]

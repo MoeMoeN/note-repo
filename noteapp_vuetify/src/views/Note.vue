@@ -19,7 +19,11 @@
             v-model="note.body"
             >
             </v-textarea>
-            <v-btn @click="saveNote()">Save</v-btn>
+            <v-btn
+            v-on:keyup.ctrl.83="saveNote()"
+            @click="saveNote()"
+            >
+            Save</v-btn>
         </v-container>
     </v-form>
 </v-app>
@@ -37,7 +41,20 @@ export default {
     },
     mounted(){
         this.getNote()
-        
+
+        //capture ctrl + s
+        this._keyListener = function(e) {
+            if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault(); // present "Save Page" from getting triggered.
+
+                this.saveNote();
+            }
+        };
+
+        document.addEventListener('keydown', this._keyListener.bind(this));
+    },
+    beforeDestroy() {
+        document.removeEventListener('keydown', this._keyListener);
     },
     methods: {
         async getNote(){
@@ -61,7 +78,7 @@ export default {
             //send post request to django
             //with new title and body
             await axios
-                .post(`/api/notes/${note_id}/`, {title: note_title, body: note_body})
+                .patch(`/api/notes/${note_id}/`, {title: note_title, body: note_body})
                 .then(response => {
                     //console.log(response)
                 })

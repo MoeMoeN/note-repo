@@ -1,5 +1,6 @@
 <template>
 <v-app theme="dark">
+  <v-btn @click="createNote()">Add note</v-btn>
   <v-container>
     <v-row
       v-masonry
@@ -34,8 +35,13 @@
             >
               
               <v-card-title>{{ note.title }}</v-card-title>
-              <v-card-text >{{ note.body }}</v-card-text>
-              <v-card-subtitle class="text-right text-padding" padding="2">{{ note.created }}</v-card-subtitle>
+              <v-card-text>
+                <div 
+                v-for = "line in note.body.split('\n')">
+                  {{ line }}
+                </div>
+              </v-card-text>
+              <v-card-subtitle class="text-right text-padding" padding="2">{{ note.created.substring(0, note.created.indexOf("T")) }}</v-card-subtitle>
             </v-card>
           </router-link>
           </v-hover>
@@ -90,6 +96,13 @@ export default{
         .then(response=> {
           this.notes = response.data
           
+          // for (let i = 0; i < this.notes.length; i++) {
+          //   this.notes[i].body = this.notes[i].body.replace("\n/g", "`<br>`")
+          // }
+          // this.notes.forEach(note => {
+          //   console.log(note.body)
+          // })
+
           //seems to do nothing in v-masonry :order='order'
           this.order = this.notes
             .sort((a, b) => new Date(b.created) - new Date(a.created))
@@ -99,7 +112,19 @@ export default{
           console.log(error)
         })
     },
-
+    //create note
+    async createNote(){
+      await axios
+        .post('/api/notes/', {title: '', body: '', user: 1}) //temporaly id of admin user
+        .then(response=>{
+          const note_id = response.data.id;
+          
+          return this.$router.push(`/new-note/${note_id}`)
+        })
+        .catch(error=>{
+          console.log(error)
+        })
+    }, 
     //delete note
     async deleteNote(){
       const noteId = this.contextMenuNote.id;

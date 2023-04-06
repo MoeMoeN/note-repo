@@ -22,5 +22,6 @@ class NoteSerializer(serializers.ModelSerializer):
             'title',
             'body',
             'todos',
+            'user',
             'created',
         )
