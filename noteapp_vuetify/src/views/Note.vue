@@ -17,6 +17,7 @@
             no-resize
             rows="23"
             v-model="note.body"
+            v-debounce:5s="saveNote"
             >
             </v-textarea>
             <v-btn
@@ -24,8 +25,19 @@
             @click="saveNote()"
             >
             Save</v-btn>
+            <v-progress-circular v-show="isLoading" size="25" width="3" color="white" style="margin-left: 20px;" indeterminate></v-progress-circular>
         </v-container>
     </v-form>
+
+    <v-snackbar
+    v-model="snackbar_saved"
+    :timeout="snackbar_timeout"
+    color="success"
+    location="bottom right"
+    >
+        Saved!
+    </v-snackbar>
+    
 </v-app>
 </template>
 
@@ -37,6 +49,9 @@ export default {
     data(){
         return{
             note: {},
+            snackbar_saved: false,
+            snackbar_timeout: 2000,
+            isLoading: false,
         }
     },
     mounted(){
@@ -71,6 +86,8 @@ export default {
                 })
         },
         async saveNote(){
+            this.isLoading = true;
+            this.snackbar_saved = false;
             const note_title = this.note.title
             const note_body = this.note.body
             const note_id = this.$route.params.note_id;
@@ -81,6 +98,8 @@ export default {
                 .patch(`/api/notes/${note_id}/`, {title: note_title, body: note_body})
                 .then(response => {
                     //console.log(response)
+                    this.snackbar_saved = true;
+                    this.isLoading = false;  
                 })
                 .catch(error=>{
                     console.log(error)

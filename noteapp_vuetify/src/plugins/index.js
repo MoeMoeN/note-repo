@@ -10,6 +10,8 @@ import vuetify from './vuetify'
 import pinia from '../store'
 import router from '../router'
 
+
+import { vue3Debounce } from 'vue-debounce'
 import { VueMasonryPlugin } from 'vue-masonry'
 
 export function registerPlugins (app) {
@@ -19,4 +21,5 @@ export function registerPlugins (app) {
     .use(pinia)
     .use(router)
     .use(VueMasonryPlugin)
+    .directive('debounce', vue3Debounce({ lock: true }))
 }
