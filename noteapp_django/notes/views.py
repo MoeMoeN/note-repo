@@ -1,4 +1,4 @@
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 
 # from rest_framework.authtoken.views import ObtainAuthToken
@@ -41,6 +41,12 @@ class LoginView(APIView):
         token, _ = Token.objects.get_or_create(user=user)
         return Response({'token': token.key, "userid": request.user.id}, status=status.HTTP_200_OK)
 
+class LogoutView(APIView):
+    def post(self, request):
+        request.user.auth_token.delete()
+        logout(request)
+        return Response(status=status.HTTP_200_OK)
+
 class UserView(APIView):
 
     def get(self, request):
@@ -82,7 +88,7 @@ class NoteAPIView(APIView):
 class NotesDetailAPIView(APIView):
     #get note
     def get(self, request, note_id):
-        note = get_object_or_404(Note, id=note_id)
+        note = get_object_or_404(Note, id=note_id, user=request.user.id)
         serializer = NoteSerializer(note)
         return Response(data=serializer.data)
     

@@ -22,6 +22,8 @@
             </v-container>
             <v-btn @click="signUp()">Sign Up</v-btn>
         </v-form>
+        <br>
+        <router-link to="/login">Login instead</router-link>
     </v-app>
 </template>
 

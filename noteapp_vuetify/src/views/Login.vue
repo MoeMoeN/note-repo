@@ -22,6 +22,8 @@
             </v-container>
             <v-btn @click="login()">Login</v-btn>
         </v-form>
+        <br>
+        <router-link to="/sign-up">Sign up instead</router-link>
     </v-app>
 </template>
 
@@ -64,7 +66,7 @@ export default{
                     const csrftoken = response.data['token']
                     VueCookies.set('csrftoken', csrftoken)
                     console.log(response.data)
-                    return this.$router.push(`/`)
+                    return this.$router.push(`/`).then(()=>{location.reload()})
                 })
                 .catch(error=>{
                     console.log(error)

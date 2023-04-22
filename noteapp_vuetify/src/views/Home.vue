@@ -91,9 +91,10 @@ export default{
   methods:{
     async getUserData(){
       const csrftoken = VueCookies.get('csrftoken')
-      await axios
+      return await axios
         .get('/api/user', {headers: {'Authorization': `Token ${csrftoken}`}})
         .then(response =>{
+          //console.log(response.data)
           return response.data
         })
     },
@@ -123,12 +124,11 @@ export default{
     },
     //create note
     async createNote(){
-      //const user = this.getUserData()
-      //const user_id = user['id']
-      //console.log(user_id)
+      const user = await this.getUserData()
+      const user_id = user['id']
       const csrftoken = VueCookies.get('csrftoken')
       await axios
-        .post('/api/notes/', {title: '', body: '', user: 1}, {headers: {'Authorization': `Token ${csrftoken}`}}) //temporaly id of admin user
+        .post('/api/notes/', {title: '', body: '', user: user_id}, {headers: {'Authorization': `Token ${csrftoken}`}}) //temporaly id of admin user
         .then(response=>{
           const note_id = response.data.id;
           
