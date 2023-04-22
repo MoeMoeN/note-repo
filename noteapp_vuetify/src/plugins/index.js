@@ -9,6 +9,7 @@ import { loadFonts } from './webfontloader'
 import vuetify from './vuetify'
 import pinia from '../store'
 import router from '../router'
+import VueCookies from 'vue-cookies'
 
 
 import { vue3Debounce } from 'vue-debounce'
@@ -20,6 +21,7 @@ export function registerPlugins (app) {
     .use(vuetify)
     .use(pinia)
     .use(router)
+    .use(VueCookies)
     .use(VueMasonryPlugin)
     .directive('debounce', vue3Debounce({ lock: true }))
 }

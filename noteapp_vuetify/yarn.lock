@@ -480,6 +480,11 @@ vite-plugin-vuetify@^1.0.0-alpha.12:
   optionalDependencies:
     fsevents "~2.3.2"
 
+vue-cookies@^1.8.3:
+  version "1.8.3"
+  resolved "https://registry.npmjs.org/vue-cookies/-/vue-cookies-1.8.3.tgz"
+  integrity sha512-VBRsyRMVdahBgFfh389TMHPmDdr4URDJNMk4FKSCfuNITs7+jitBDhwyL4RJd3WUsfOYNNjPAkfbehyH9AFuoA==
+
 vue-debounce@^4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/vue-debounce/-/vue-debounce-4.0.0.tgz"

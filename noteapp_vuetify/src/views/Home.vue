@@ -63,7 +63,7 @@
 
 <script>
 import axios from 'axios'
-
+import VueCookies from 'vue-cookies'
 import ContextMenu from '../components/ContextMenu.vue'
 
 export default{
@@ -89,10 +89,19 @@ export default{
     document.title = 'Fancy Notes'
   },
   methods:{
+    async getUserData(){
+      const csrftoken = VueCookies.get('csrftoken')
+      await axios
+        .get('/api/user', {headers: {'Authorization': `Token ${csrftoken}`}})
+        .then(response =>{
+          return response.data
+        })
+    },
     //get notes
     async getNotes(){
+      const csrftoken = VueCookies.get('csrftoken')
       await axios
-        .get('/api/notes')
+        .get('/api/notes/', {headers: {'Authorization': `Token ${csrftoken}`}})
         .then(response=> {
           this.notes = response.data
           
@@ -114,8 +123,12 @@ export default{
     },
     //create note
     async createNote(){
+      //const user = this.getUserData()
+      //const user_id = user['id']
+      //console.log(user_id)
+      const csrftoken = VueCookies.get('csrftoken')
       await axios
-        .post('/api/notes/', {title: '', body: '', user: 1}) //temporaly id of admin user
+        .post('/api/notes/', {title: '', body: '', user: 1}, {headers: {'Authorization': `Token ${csrftoken}`}}) //temporaly id of admin user
         .then(response=>{
           const note_id = response.data.id;
           
@@ -127,10 +140,11 @@ export default{
     }, 
     //delete note
     async deleteNote(){
+      const csrftoken = VueCookies.get('csrftoken')
       const noteId = this.contextMenuNote.id;
       if (confirm("Are you sure?")){
         await axios
-          .delete(`/api/notes/${noteId}/`)
+          .delete(`/api/notes/${noteId}/`, {headers: {'Authorization': `Token ${csrftoken}`}})
           .then(response => {
             console.log(response);
             this.notes = this.notes.filter(note => note.id !== noteId);

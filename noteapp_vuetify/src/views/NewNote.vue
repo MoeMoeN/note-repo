@@ -30,7 +30,7 @@
     
 <script>
 import axios from 'axios'
-
+import VueCookies from 'vue-cookies'
 export default {
     name: 'Note',
     data(){
@@ -43,7 +43,6 @@ export default {
     },
     mounted(){
         this.getNote()
-        
                 //capture ctrl + s
                 this._keyListener = function(e) {
             if (e.key === "s" && (e.ctrlKey || e.metaKey)) {
@@ -60,9 +59,10 @@ export default {
     },
     methods: {
         async getNote(){
+            const csrftoken = VueCookies.get('csrftoken')
             const note_id = this.$route.params.note_id;
             await axios
-                .get(`/api/notes/${note_id}`)
+                .get(`/api/notes/${note_id}`, {headers: {'Authorization': `Token ${csrftoken}`}})
                 .then(response => {
                     this.note = response.data
                     //console.log(this.note)
@@ -75,6 +75,7 @@ export default {
         async saveNote(){
             this.isLoading = true;
             this.snackbar_saved = false;
+            const csrftoken = VueCookies.get('csrftoken')
             const note_body = this.note.body
 
             const firstLine = note_body.substring(0, note_body.indexOf('\n'));
@@ -82,7 +83,7 @@ export default {
             const note_id = this.$route.params.note_id;
             //TODO add auto save when inactive (stopped writing for some time)
             await axios
-                .patch(`/api/notes/${note_id}/`, {title: note_title, body: note_body})
+                .patch(`/api/notes/${note_id}/`, {title: note_title, body: note_body}, {headers: {'Authorization': `Token ${csrftoken}`}})
                 .then(response => {
                     //console.log(response)
                     this.snackbar_saved = true;
