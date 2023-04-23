@@ -13,9 +13,11 @@ from braces.views import CsrfExemptMixin
 
 from django.shortcuts import render, get_object_or_404
 
+import logging
+logger = logging.getLogger()
 
-from .models import Note, Todo
-from .serializers import NoteSerializer, TodoSerializer, UserSerializer, UserInfoSerializer, LoginSerializer
+from .models import Note, DeletedNote, Todo
+from .serializers import NoteSerializer, DeletedNoteSerializer, TodoSerializer, UserSerializer, UserInfoSerializer, LoginSerializer
 
 class CreateUserView(APIView):
     permission_classes = [permissions.AllowAny]
@@ -64,7 +66,6 @@ class NoteAPIView(APIView):
     #get notes
     def get(self, request):
         notes = Note.objects.filter(user=request.user)
-
         for note in notes:
             note.body = note.body[0:450] + "..." if len(note.body) > 450 else note.body
         
@@ -117,3 +118,20 @@ class NotesDetailAPIView(APIView):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
+
+class DeletedNoteAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+#TO-DO zrobic authorization w headersach requestow
+#aby mozna bylo np wejsc w ADD note 
+#I dodac zabezpieczneie aby nie wystarczyl id note w url
+#zeby nie moc odpalac notek innych uzytkownikow
+    #get notes
+    def get(self, request):
+        #deleted_notes = DeletedNote.objects.filter(user=request.user)
+        deleted_notes = DeletedNote.objects.all()
+        for note in deleted_notes:
+            note.body = note.body[0:450] + "..." if len(note.body) > 450 else note.body
+        
+        serializer = DeletedNoteSerializer(deleted_notes, many=True)
+
+        return Response(serializer.data)

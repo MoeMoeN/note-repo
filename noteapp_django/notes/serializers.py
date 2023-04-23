@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import Group
 
 from rest_framework import serializers
-from .models import Note, Todo, User
+from .models import Note, DeletedNote, Todo, User
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only = True)
@@ -74,4 +74,18 @@ class NoteSerializer(serializers.ModelSerializer):
             'todos',
             'user',
             'created',
+        )
+
+class DeletedNoteSerializer(serializers.ModelSerializer):
+    
+    #todos = TodoSerializer(many=True)
+    class Meta:
+        model = DeletedNote
+        fields = (
+            'id',
+            'title',
+            'body',
+            #'todos',
+            'user',
+            'deleted'
         )
