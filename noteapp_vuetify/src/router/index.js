@@ -5,6 +5,7 @@ import NoteView from '../views/Note.vue'
 import NewNoteView from '../views/NewNote.vue'
 import SignUpView from '../views/SignUp.vue'
 import LoginView from '../views/Login.vue'
+import RecycleBinView from '../views/RecycleBin.vue'
 
 const routes = [
   //{
@@ -45,6 +46,11 @@ const routes = [
     path: '/new-note/:note_id',
     name: 'new-note',
     component: NewNoteView,
+  },
+  {
+    path: '/recycle-bin',
+    name: 'recycle-bin',
+    component: RecycleBinView,
   },
   
 ]

@@ -23,11 +23,18 @@
           <router-link v-if="username == ''" to="/login">
           <div class="text-subtitle-1">Login</div>
           </router-link>
+          
           <router-link style="text-decoration: none; color: inherit;" to="/">
           <v-list-item prepend-icon="mdi-notebook" title="Notes" value="notes"></v-list-item>
           </router-link>
+          
           <v-list-item prepend-icon="mdi-cog" title="Settings" value="settings"></v-list-item>
+          
           <v-list-item v-if="username.length > 0" title="Logout" value="logout" @click="logout()"></v-list-item>
+          
+          <router-link style="text-decoration: none; color: inherit;" to="/recycle-bin">
+          <v-list-item v-if="username.length > 0" title="RecycleBin" value="recycle-bin"></v-list-item>
+          </router-link>
 
         </v-list>
       </v-navigation-drawer>

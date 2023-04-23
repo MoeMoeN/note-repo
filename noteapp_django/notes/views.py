@@ -98,14 +98,14 @@ class NotesDetailAPIView(APIView):
     #with possibility to get this note out of thrash bin
     def delete(self, request, note_id):    
         try:
-            Note.objects.filter(id=note_id).delete()
+            Note.objects.filter(id=note_id, user=request.user).delete()
             return Response(status=status.HTTP_200_OK)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
     #save modified note
     def patch(self, request, note_id, format=None):
-        note = get_object_or_404(Note, id=note_id) #should be NO_CONTENT but that's seems cleaner
+        note = get_object_or_404(Note, id=note_id, user=request.user) #should be NO_CONTENT but that's seems cleaner
         # try:
         #    note = Note.objects.get(id=note_id)
         #    return Response(status=status.HTTP_200_OK)
@@ -120,7 +120,6 @@ class NotesDetailAPIView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) 
 
 class DeletedNoteAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
 #TO-DO zrobic authorization w headersach requestow
 #aby mozna bylo np wejsc w ADD note 
 #I dodac zabezpieczneie aby nie wystarczyl id note w url
@@ -128,10 +127,19 @@ class DeletedNoteAPIView(APIView):
     #get notes
     def get(self, request):
         #deleted_notes = DeletedNote.objects.filter(user=request.user)
-        deleted_notes = DeletedNote.objects.all()
+        deleted_notes = DeletedNote.objects.filter(user=request.user)
         for note in deleted_notes:
             note.body = note.body[0:450] + "..." if len(note.body) > 450 else note.body
         
         serializer = DeletedNoteSerializer(deleted_notes, many=True)
 
         return Response(serializer.data)
+
+class DeletedNoteDetailAPIView(APIView):
+
+    def delete(self, request, note_id):    
+        try:
+            DeletedNote.objects.filter(id=note_id, user=request.user).delete()
+            return Response(status=status.HTTP_200_OK)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
