@@ -45,6 +45,7 @@ class DeletedNote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     deleted = models.DateTimeField(auto_now_add=True)
     created = models.DateTimeField(null=True)
+    expired = models.BooleanField(default=False, null=False)
     class Meta:
         ordering = ('-deleted',)
 

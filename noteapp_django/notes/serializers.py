@@ -87,5 +87,6 @@ class DeletedNoteSerializer(serializers.ModelSerializer):
             'body',
             #'todos',
             'user',
-            'deleted'
+            'deleted',
+            'expired',
         )

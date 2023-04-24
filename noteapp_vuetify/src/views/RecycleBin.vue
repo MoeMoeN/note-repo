@@ -33,13 +33,19 @@
                 @contextmenu.prevent.native="showContextMenu($event, note)"
                 >
                   
-                  <v-card-title>{{ note.title }}</v-card-title>
-                  <v-card-text>
+                  <v-card-title v-if="note.expired == false">{{ note.title }}</v-card-title>
+                  <v-card-text v-if="note.expired == false">
                     <div 
                     v-for = "line in note.body.split('\n')">
                       {{ line }}
                     </div>
                   </v-card-text>
+
+                  <v-card-title v-if="note.expired == true">---EXPIRED---</v-card-title>
+                  <v-card-text v-if="note.expired == true">
+                    <div>---EXPIRED---</div>
+                  </v-card-text>
+
                   <v-card-subtitle class="text-right text-padding" padding="2">Moved to recycle bin: {{ note.deleted.substring(0, note.deleted.indexOf("T")) }}</v-card-subtitle>
                 </v-card>
               </v-hover>

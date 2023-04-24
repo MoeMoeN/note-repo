@@ -126,7 +126,6 @@ class DeletedNoteAPIView(APIView):
 #zeby nie moc odpalac notek innych uzytkownikow
     #get notes
     def get(self, request):
-        #deleted_notes = DeletedNote.objects.filter(user=request.user)
         deleted_notes = DeletedNote.objects.filter(user=request.user)
         for note in deleted_notes:
             note.body = note.body[0:450] + "..." if len(note.body) > 450 else note.body

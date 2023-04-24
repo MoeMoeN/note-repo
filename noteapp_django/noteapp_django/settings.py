@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'corsheaders',
 
+    'django_crontab',
+
     'notes',
 ]
 
@@ -174,3 +176,7 @@ LOGGING = {
         'level': 'DEBUG',
     },
 }
+
+CRONJOBS = [
+    ('*/1 * * * *', 'notes.cron.PermanentDeleteExpiredNotes'),
+]
